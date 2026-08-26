@@ -1,53 +1,60 @@
 plugins {
     id 'java'
-    id 'io.qameta.allure' version '2.11.0'
+    id 'io.qameta.allure' version '2.11.6'
 }
 
 group = 'com.qa.automation'
 version = '1.0.0'
-sourceCompatibility = '11'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
 
 repositories {
     mavenCentral()
-    maven { url 'https://repo.maven.apache.org/maven2' }
 }
 
 dependencies {
     // Playwright
-    testImplementation 'com.microsoft.playwright:playwright:1.40.0'
+    implementation 'com.microsoft.playwright:playwright:1.40.0'
 
     // Cucumber
     testImplementation 'io.cucumber:cucumber-java:7.14.0'
     testImplementation 'io.cucumber:cucumber-junit:7.14.0'
     testImplementation 'io.cucumber:cucumber-picocontainer:7.14.0'
 
-    // JUnit
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
+    // JUnit 5
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
 
     // Allure
-    testImplementation 'io.qameta.allure:allure-cucumber7-jvm:2.21.0'
-    testImplementation 'io.qameta.allure:allure-junit5:2.21.0'
-    testImplementation 'io.qameta.allure:allure-playwright:2.21.0'
+    testImplementation 'io.qameta.allure:allure-cucumber7-jvm:2.25.0'
+    testImplementation 'io.qameta.allure:allure-junit5:2.25.0'
 
     // Logging
-    testImplementation 'org.slf4j:slf4j-api:2.0.9'
-    testImplementation 'ch.qos.logback:logback-classic:1.4.11'
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+    implementation 'ch.qos.logback:logback-classic:1.4.12'
 
-    // AssertJ
+    // JSON para configuración
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+    // WebDriverManager (opcional, para gestionar drivers)
+    implementation 'io.github.bonigarcia:webdrivermanager:5.6.3'
+
+    // AssertJ para aserciones mejoradas
     testImplementation 'org.assertj:assertj-core:3.24.1'
-
-    // Configuration
-    testImplementation 'org.yaml:snakeyaml:2.2'
 }
 
-test {
-    useJUnitPlatform()
-    systemProperty 'allure.results.directory', 'target/allure-results'
-    testLogging {
-        events "passed", "skipped", "failed"
-        exceptionFormat "full"
+tasks {
+    test {
+        useJUnitPlatform()
+        systemProperty 'cucumber.execution.parallel.enabled', 'true'
+        systemProperty 'allure.results.directory', 'target/allure-results'
+        testLogging {
+            events 'passed', 'skipped', 'failed'
+            exceptionFormat 'full'
+        }
     }
 }
 
