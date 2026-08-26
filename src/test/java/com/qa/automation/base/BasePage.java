@@ -5,18 +5,106 @@ import com.microsoft.playwright.options.MouseButton;
 import com.microsoft.playwright.options.WaitForSelectorState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * BasePage - Clase base que contiene todos los métodos reutilizables
  * para interactuar con elementos de página usando Playwright
+ * 
+ * Incluye soporte para tracing automático y grabación de errores
  */
 public class BasePage {
     protected Page page;
+    protected BrowserContext context;
     protected static final Logger logger = LoggerFactory.getLogger(BasePage.class);
 
     public BasePage(Page page) {
         this.page = page;
+        this.context = page.context();
     }
+
+    // ========== MÉTODOS DE TRACING ==========
+
+    /**
+     * Iniciar tracing con capturas de pantalla y snapshots
+     * Útil para grabar y luego visualizar con Playwright Inspector
+     */
+    public void startTracing(String traceName) {
+        if (context == null) {
+            logger.warn("Contexto de navegador no disponible para tracing");
+            return;
+        }
+
+        logger.info("Iniciando tracing: " + traceName);
+        try {
+            context.tracing().start(new BrowserContext.TracingStartOptions()
+                    .setScreenshots(true)
+                    .setSnapshots(true)
+                    .setSources(true));
+            logger.info("✓ Tracing iniciado correctamente");
+        } catch (Exception e) {
+            logger.error("Error al iniciar tracing: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Detener tracing y guardar archivo
+     * El archivo se guardará en: target/traces/{traceName}.zip
+     */
+    public void stopTracing(String traceName) {
+        if (context == null) {
+            logger.warn("Contexto de navegador no disponible para detener tracing");
+            return;
+        }
+
+        logger.info("Deteniendo tracing: " + traceName);
+        try {
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+            String filePath = String.format("target/traces/%s_%s.zip", traceName, timestamp);
+            
+            context.tracing().stop(new BrowserContext.TracingStopOptions()
+                    .setPath(Paths.get(filePath)));
+            
+            logger.info("✓ Tracing guardado en: " + filePath);
+            logger.info("  Visualiza con: gradle openTrace");
+        } catch (Exception e) {
+            logger.error("Error al detener tracing: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Tomar captura de pantalla automática en caso de fallo
+     */
+    public void takeScreenshotOnFailure(String testName) {
+        logger.info("Capturando pantalla por fallo en test: " + testName);
+        try {
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+            String filePath = String.format("target/screenshots/%s_FAILED_%s.png", testName, timestamp);
+            
+            page.screenshot(new Page.ScreenshotOptions()
+                    .setPath(Paths.get(filePath)));
+            
+            logger.error("Screenshot capturada: " + filePath);
+        } catch (Exception e) {
+            logger.error("Error al capturar pantalla: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Habilitar/Deshabilitar modo debug
+     */
+    public void setDebugMode(boolean enabled) {
+        if (enabled) {
+            logger.info("✓ Modo DEBUG activado");
+            page.pause();
+        } else {
+            logger.info("✓ Modo DEBUG desactivado");
+        }
+    }
+
+    // ========== MÉTODOS EXISTENTES ==========
 
     /**
      * Navega a una URL específica
@@ -270,7 +358,7 @@ public class BasePage {
      */
     public void takeScreenshot(String filename) {
         logger.info("Tomando captura de pantalla: " + filename);
-        page.screenshot(new Page.ScreenshotOptions().setPath(java.nio.file.Paths.get(filename)));
+        page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get(filename)));
     }
 
     /**
