@@ -1,0 +1,9 @@
+{
+  "baseUrl": "https://example.com",
+  "browser": "chromium",
+  "headless": true,
+  "timeout": 30000,
+  "screenshotPath": "target/screenshots/",
+  "takeScreenshots": true,
+  "reportPath": "target/allure-results/"
+}
