@@ -1,5 +1,5 @@
 {
-  "baseUrl": "https://example.com",
+  "baseUrl": "https://demoqa.com/login",
   "browser": "chromium",
   "headless": false,
   "timeout": 30000,

@@ -10,11 +10,11 @@ import com.qa.automation.base.BasePage;
 public class LoginPage extends BasePage {
     
     // Selectores
-    private static final String USERNAME_INPUT = "input[name='username']";
-    private static final String PASSWORD_INPUT = "input[name='password']";
-    private static final String LOGIN_BUTTON = "button[type='submit']";
+    private static final String USERNAME_INPUT = "//input[@id='userName']";
+    private static final String PASSWORD_INPUT = "//input[@id='password']";
+    private static final String LOGIN_BUTTON = "//button[@id='login']";
     private static final String ERROR_MESSAGE = ".error-message";
-    private static final String WELCOME_TEXT = ".welcome-message";
+    private static final String WELCOME_TEXT = "//p[@id='name']";
 
     public LoginPage(Page page) {
         super(page);
