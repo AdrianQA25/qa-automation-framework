@@ -1,6 +1,8 @@
 package com.qa.automation.base;
 
 import com.microsoft.playwright.*;
+import com.microsoft.playwright.options.MouseButton;
+import com.microsoft.playwright.options.WaitForSelectorState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +61,7 @@ public class BasePage {
      */
     public void rightClick(String selector) {
         logger.info("Click derecho en: " + selector);
-        page.click(selector, new Page.ClickOptions().setButton("right"));
+        page.click(selector, new Page.ClickOptions().setButton(MouseButton.RIGHT));
     }
 
     /**
@@ -311,7 +313,19 @@ public class BasePage {
      */
     public Frame switchToFrame(String selector) {
         logger.info("Cambiando a frame: " + selector);
-        return page.frameLocator(selector).frame();
+        ElementHandle iframe = page.waitForSelector(selector,
+                new Page.WaitForSelectorOptions().setState(WaitForSelectorState.ATTACHED));
+
+        if (iframe == null) {
+            throw new PlaywrightException("No se encontró el iframe con selector: " + selector);
+        }
+
+        Frame frame = iframe.contentFrame();
+        if (frame == null) {
+            throw new PlaywrightException("No se pudo obtener el frame para el selector: " + selector);
+        }
+
+        return frame;
     }
 
     /**

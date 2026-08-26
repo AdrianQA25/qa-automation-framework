@@ -1,14 +1,14 @@
 plugins {
     id 'java'
-    id 'io.qameta.allure' version '2.11.6'
+    id 'io.qameta.allure' version '4.1.0'
 }
 
 group = 'com.qa.automation'
 version = '1.0.0'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_20
+    targetCompatibility = JavaVersion.VERSION_20
 }
 
 repositories {
@@ -54,15 +54,6 @@ tasks {
         testLogging {
             events 'passed', 'skipped', 'failed'
             exceptionFormat 'full'
-        }
-    }
-}
-
-// Task para generar reporte Allure
-task allureReport {
-    doLast {
-        exec {
-            commandLine 'allure', 'generate', 'target/allure-results', '-o', 'target/allure-report', '--clean'
         }
     }
 }

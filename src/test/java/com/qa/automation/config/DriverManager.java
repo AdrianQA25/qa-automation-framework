@@ -25,7 +25,7 @@ public class DriverManager {
             String browserType = ConfigurationManager.getBrowser().toLowerCase();
             boolean headless = ConfigurationManager.isHeadless();
 
-            Browser.LaunchOptions options = new Browser.LaunchOptions().setHeadless(headless);
+            BrowserType.LaunchOptions options = new BrowserType.LaunchOptions().setHeadless(headless);
 
             browser = switch (browserType) {
                 case "firefox" -> playwright.firefox().launch(options);
