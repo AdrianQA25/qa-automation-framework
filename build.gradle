@@ -1,0 +1,84 @@
+plugins {
+    id 'java'
+    id 'io.qameta.allure' version '2.11.0'
+}
+
+group = 'com.qa.automation'
+version = '1.0.0'
+sourceCompatibility = '11'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.maven.apache.org/maven2' }
+}
+
+dependencies {
+    // Playwright
+    testImplementation 'com.microsoft.playwright:playwright:1.40.0'
+
+    // Cucumber
+    testImplementation 'io.cucumber:cucumber-java:7.14.0'
+    testImplementation 'io.cucumber:cucumber-junit:7.14.0'
+    testImplementation 'io.cucumber:cucumber-picocontainer:7.14.0'
+
+    // JUnit
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
+
+    // Allure
+    testImplementation 'io.qameta.allure:allure-cucumber7-jvm:2.21.0'
+    testImplementation 'io.qameta.allure:allure-junit5:2.21.0'
+    testImplementation 'io.qameta.allure:allure-playwright:2.21.0'
+
+    // Logging
+    testImplementation 'org.slf4j:slf4j-api:2.0.9'
+    testImplementation 'ch.qos.logback:logback-classic:1.4.11'
+
+    // AssertJ
+    testImplementation 'org.assertj:assertj-core:3.24.1'
+
+    // Configuration
+    testImplementation 'org.yaml:snakeyaml:2.2'
+}
+
+test {
+    useJUnitPlatform()
+    systemProperty 'allure.results.directory', 'target/allure-results'
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
+    }
+}
+
+// Task para generar reporte Allure
+task allureReport {
+    doLast {
+        exec {
+            commandLine 'allure', 'generate', 'target/allure-results', '-o', 'target/allure-report', '--clean'
+        }
+    }
+}
+
+// Task para abrir reporte Allure
+task openAllureReport {
+    doLast {
+        exec {
+            commandLine 'allure', 'open', 'target/allure-report'
+        }
+    }
+}
+
+// Task para limpiar y ejecutar tests
+task runTests {
+    dependsOn 'clean', 'test'
+}
+
+// Task para ejecutar solo features específicas
+task runFeature(type: Test) {
+    useJUnitPlatform()
+    systemProperty 'allure.results.directory', 'target/allure-results'
+    if (project.hasProperty('feature')) {
+        systemProperty 'cucumber.filter.tags', "@${project.property('feature')}"
+    }
+}
