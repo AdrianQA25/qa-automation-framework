@@ -33,7 +33,10 @@ qa-automation-framework/
 │           ├── config.json                     # Configuración del framework
 │           └── features/
 │               └── Login.feature               # Archivos .feature
-├── build.gradle.kts
+├── build.gradle                                # Build file con Groovy syntax
+├── CONTRIBUTING.md                             # Guía de contribución
+├── ADVANCED_EXAMPLES.md                        # Ejemplos avanzados
+├── TROUBLESHOOTING.md                          # Guía de troubleshooting
 └── README.md
 ```
 
@@ -50,7 +53,13 @@ git clone https://github.com/AdrianQA25/qa-automation-framework.git
 cd qa-automation-framework
 ```
 
-2. **Instalar dependencias:**
+2. **Verificar versión de Java:**
+```bash
+java -version
+# Debe ser Java 21 o superior
+```
+
+3. **Instalar dependencias:**
 ```bash
 gradle build
 ```
@@ -81,11 +90,26 @@ gradle test --args="--tags=@smoke"
 gradle test --args="--features=src/test/resources/features/Login.feature"
 ```
 
+### Ejecutar con task personalizado:
+```bash
+gradle runTests
+```
+
 ## Generar Reportes Allure
 
 ### Generar reporte:
 ```bash
 gradle test
+gradle allureReport
+```
+
+### Abrir reporte en navegador:
+```bash
+gradle openAllureReport
+```
+
+### O con comando directo:
+```bash
 allure serve target/allure-results
 ```
 
@@ -104,60 +128,66 @@ Métodos reutilizables para:
 - ✅ Capturas de pantalla
 - ✅ Manejo de alertas
 - ✅ Ejecución de JavaScript
-- ✅ Manejo de frames
-- ✅ Scroll, hover, etc.
+- ✅ Manejo de frames/iframes
+- ✅ Upload de archivos
 
-### Page Object Model
-Cada página tiene su propia clase que extiende `BasePage`:
-```java
-public class LoginPage extends BasePage {
-    private static final String USERNAME_INPUT = "input[name='username']";
-    
-    public LoginPage(Page page) {
-        super(page);
-    }
-    
-    public void enterUsername(String username) {
-        sendKeys(USERNAME_INPUT, username);
-    }
-}
+## Dependencias Principales
+
+| Dependencia | Versión | Propósito |
+|------------|---------|----------|
+| Playwright | 1.40.0 | Automatización del navegador |
+| Cucumber | 7.14.0 | BDD y ejecución de features |
+| JUnit 5 | 5.10.0 | Framework de testing |
+| Allure | 2.25.0 | Generación de reportes |
+| SLF4J + Logback | 2.0.9 / 1.4.12 | Logging |
+| AssertJ | 3.24.1 | Aserciones mejoradas |
+| GSON | 2.10.1 | Manejo de JSON |
+| WebDriverManager | 5.6.3 | Gestión de drivers |
+
+## Documentación
+
+- [CONTRIBUTING.md](CONTRIBUTING.md) - Guía para contribuir al proyecto
+- [ADVANCED_EXAMPLES.md](ADVANCED_EXAMPLES.md) - Ejemplos avanzados de uso
+- [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Solución de problemas comunes
+
+## Estructura de Carpetas de Salida
+
+Después de ejecutar las pruebas:
+```
+target/
+├── allure-results/          # Resultados para Allure
+├── allure-report/           # Reporte HTML generado
+├── test-results/            # Resultados de JUnit
+├── logs/                    # Logs de la ejecución
+└── screenshots/             # Capturas de pantalla en fallos
 ```
 
-### Hooks
-Ejecutan automáticamente antes y después de cada escenario:
-- Inicializar navegador
-- Navegar a URL base
-- Capturar pantallas en fallos
-- Limpiar datos del navegador
-- Cerrar navegador
+## Best Practices
 
-### Logging
-Logs detallados en cada acción usando SLF4J + Logback
+✅ Usar Page Object Model (POM)
+✅ Escribir steps legibles en Cucumber
+✅ Usar esperas explícitas en lugar de sleep()
+✅ Loguear acciones importantes
+✅ Capturar pantallas en casos de fallo
+✅ Mantener selectores como constantes
+✅ Documentar métodos complejos
+✅ Usar assertions claras y descriptivas
 
-## Mejores Prácticas
+## Troubleshooting
 
-1. **Selectores CSS**: Preferir CSS selectors sobre XPath para mejor rendimiento
-2. **Nombres descriptivos**: Usar nombres claros en métodos y variables
-3. **Reutilización**: Heredar de BasePage para acceder a métodos comunes
-4. **Logging**: Loguear acciones importantes para debugging
-5. **Waits**: Usar esperas explícitas en lugar de sleep
-6. **Screenshots**: Capturar pantallas en escenarios fallidos
-7. **Assertions**: Usar AssertJ para aserciones claras
+Si encuentras problemas:
+1. Revisa [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
+2. Verifica los logs en `target/logs/`
+3. Revisa el reporte Allure
 
-## Roadmap Futuro
+## Contribuir
 
-- [ ] Integración con CI/CD
-- [ ] Ejecución paralela mejorada
-- [ ] Métodos para upload de archivos
-- [ ] Manejo avanzado de modales
-- [ ] Ejemplos de API testing
-- [ ] Data-driven testing
-- [ ] Integración con TestNG
+Por favor lee [CONTRIBUTING.md](CONTRIBUTING.md) para detalles sobre cómo contribuir a este proyecto.
 
-## Soporte
+## Licencia
 
-Para reportar issues o sugerencias, abrir una issue en el repositorio.
+Este proyecto está bajo licencia MIT.
 
 ## Autor
 
-Adrian QA - QA Automation Engineer
+Adrian QA
