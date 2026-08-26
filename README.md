@@ -17,26 +17,29 @@ qa-automation-framework/
 │       ├── java/
 │       │   └── com/qa/automation/
 │       │       ├── base/
-│       │       │   └── BasePage.java          # Clase base con métodos reutilizables
+│       │       │   └── BasePage.java                    # Clase base con métodos reutilizables
 │       │       ├── config/
 │       │       │   ├── ConfigurationManager.java
-│       │       │   └── DriverManager.java      # Gestión de navegador
+│       │       │   └── DriverManager.java                # Gestión de navegador
 │       │       ├── pages/
-│       │       │   └── LoginPage.java          # Page Object de ejemplo
+│       │       │   └── LoginPage.java                    # Page Object de ejemplo
 │       │       ├── steps/
-│       │       │   └── LoginSteps.java         # Step definitions de Cucumber
+│       │       │   └── LoginSteps.java                   # Step definitions de Cucumber
 │       │       ├── hooks/
-│       │       │   └── Hooks.java              # Before/After Cucumber
+│       │       │   └── Hooks.java                        # Before/After Cucumber
+│       │       ├── recorder/
+│       │       │   └── RecorderTest.java                 # Tests para grabar con Inspector
 │       │       └── runner/
-│       │           └── TestRunner.java         # Ejecutor de pruebas
+│       │           └── TestRunner.java                   # Ejecutor de pruebas
 │       └── resources/
-│           ├── config.json                     # Configuración del framework
+│           ├── config.json                               # Configuración del framework
 │           └── features/
-│               └── Login.feature               # Archivos .feature
-├── build.gradle                                # Build file con Groovy syntax
-├── CONTRIBUTING.md                             # Guía de contribución
-├── ADVANCED_EXAMPLES.md                        # Ejemplos avanzados
-├── TROUBLESHOOTING.md                          # Guía de troubleshooting
+│               └── Login.feature                         # Archivos .feature
+├── build.gradle                                          # Build file con Groovy syntax + Recording tasks
+├── RECORDING.md                                          # Guía de grabación con Playwright Inspector
+├── CONTRIBUTING.md                                       # Guía de contribución
+├── ADVANCED_EXAMPLES.md                                  # Ejemplos avanzados
+├── TROUBLESHOOTING.md                                    # Guía de troubleshooting
 └── README.md
 ```
 
@@ -95,6 +98,33 @@ gradle test --args="--features=src/test/resources/features/Login.feature"
 gradle runTests
 ```
 
+## 🎬 Grabación de Tests con Playwright Inspector
+
+Playwright Inspector permite **grabar tus acciones manualmente y generar automáticamente el código Java**.
+
+### Comandos de Grabación:
+
+| Comando | Descripción |
+|---------|-------------|
+| `gradle recordTest` | Grabación simple - Inspector + Navegador abiertos |
+| `gradle recordTestWithTrace` | Grabación con screenshots, snapshots y eventos |
+| `gradle recordTestWithConfig` | Grabación usando configuración de config.json |
+| `gradle openTrace` | Visualizar grabaciones guardadas (traces) |
+
+### Ejemplo Rápido:
+
+```bash
+# 1. Ejecuta la grabación
+gradle recordTest
+
+# 2. Se abrirán el navegador y el Inspector
+# 3. Realiza tus acciones manualmente (60 segundos)
+# 4. Copia el código generado en el Inspector
+# 5. Pégalo en tu test
+```
+
+**Para más detalles:** Ver [RECORDING.md](RECORDING.md)
+
 ## Generar Reportes Allure
 
 ### Generar reporte:
@@ -130,6 +160,8 @@ Métodos reutilizables para:
 - ✅ Ejecución de JavaScript
 - ✅ Manejo de frames/iframes
 - ✅ Upload de archivos
+- ✅ **Tracing automático** (startTracing, stopTracing)
+- ✅ **Screenshots en fallos** (takeScreenshotOnFailure)
 
 ## Dependencias Principales
 
@@ -146,6 +178,7 @@ Métodos reutilizables para:
 
 ## Documentación
 
+- [RECORDING.md](RECORDING.md) - **Guía de grabación con Playwright Inspector** 🎬
 - [CONTRIBUTING.md](CONTRIBUTING.md) - Guía para contribuir al proyecto
 - [ADVANCED_EXAMPLES.md](ADVANCED_EXAMPLES.md) - Ejemplos avanzados de uso
 - [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Solución de problemas comunes
@@ -157,9 +190,11 @@ Después de ejecutar las pruebas:
 target/
 ├── allure-results/          # Resultados para Allure
 ├── allure-report/           # Reporte HTML generado
+├── traces/                  # Grabaciones de traces (ZIP)
+├── screenshots/             # Capturas de pantalla en fallos
 ├── test-results/            # Resultados de JUnit
 ├── logs/                    # Logs de la ejecución
-└── screenshots/             # Capturas de pantalla en fallos
+└── trace.zip                # Última grabación (para openTrace)
 ```
 
 ## Best Practices
@@ -172,13 +207,33 @@ target/
 ✅ Mantener selectores como constantes
 ✅ Documentar métodos complejos
 ✅ Usar assertions claras y descriptivas
+✅ Usar Playwright Inspector para grabar tests complejos
+
+## Workflow Típico
+
+```
+1. Clonar repositorio
+        ↓
+2. Instalar dependencias (gradle build)
+        ↓
+3. Crear tests:
+   - Opción A: Grabar con Inspector (gradle recordTest)
+   - Opción B: Escribir manualmente
+        ↓
+4. Ejecutar tests (gradle test)
+        ↓
+5. Revisar reportes (gradle openAllureReport)
+        ↓
+6. ¡Tests automatizados listos!
+```
 
 ## Troubleshooting
 
 Si encuentras problemas:
 1. Revisa [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
 2. Verifica los logs en `target/logs/`
-3. Revisa el reporte Allure
+3. Revisa el reporte Allure en `target/allure-report/`
+4. Para grabación: Ver [RECORDING.md](RECORDING.md)
 
 ## Contribuir
 
@@ -190,4 +245,4 @@ Este proyecto está bajo licencia MIT.
 
 ## Autor
 
-Adrian QA
+Adrian QA - QA Automation Engineer
