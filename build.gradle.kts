@@ -1,0 +1,54 @@
+plugins {
+    java
+    id("io.qameta.allure") version "2.11.6"
+}
+
+group = "com.qa.automation"
+version = "1.0.0"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Playwright
+    implementation("com.microsoft.playwright:playwright:1.40.0")
+
+    // Cucumber
+    testImplementation("io.cucumber:cucumber-java:7.14.0")
+    testImplementation("io.cucumber:cucumber-junit:7.14.0")
+    testImplementation("io.cucumber:cucumber-picocontainer:7.14.0")
+
+    // JUnit 5
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.0")
+
+    // Allure
+    testImplementation("io.qameta.allure:allure-cucumber7-jvm:2.25.0")
+    testImplementation("io.qameta.allure:allure-junit5:2.25.0")
+
+    // Logging
+    implementation("org.slf4j:slf4j-api:2.0.9")
+    implementation("ch.qos.logback:logback-classic:1.4.12")
+
+    // JSON para configuración
+    implementation("com.google.code.gson:gson:2.10.1")
+
+    // WebDriverManager (opcional, para gestionar drivers)
+    implementation("io.github.bonigarcia:webdrivermanager:5.6.3")
+
+    // Assertj para aserciones mejoradas
+    testImplementation("org.assertj:assertj-core:3.24.1")
+}
+
+tasks {
+    test {
+        useJUnitPlatform()
+        systemProperty("cucumber.execution.parallel.enabled", "true")
+    }
+}
