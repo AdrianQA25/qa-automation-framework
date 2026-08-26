@@ -1,14 +1,14 @@
 plugins {
     id 'java'
-    id 'io.qameta.allure' version '4.1.0'
+    id 'io.qameta.allure' version '2.11.6'
 }
 
 group = 'com.qa.automation'
 version = '1.0.0'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_20
-    targetCompatibility = JavaVersion.VERSION_20
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 repositories {
@@ -54,6 +54,88 @@ tasks {
         testLogging {
             events 'passed', 'skipped', 'failed'
             exceptionFormat 'full'
+        }
+    }
+}
+
+// ========== TASKS PARA GRABACIÓN CON PLAYWRIGHT INSPECTOR ==========
+
+// Task para grabar tests con Playwright Inspector (PWDEBUG)
+task recordTest {
+    doLast {
+        println("\n" + "=".repeat(60))
+        println("🎬 INICIANDO GRABACIÓN CON PLAYWRIGHT INSPECTOR")
+        println("=".repeat(60))
+        println("1. Se abrirá el navegador y el Inspector simultáneamente")
+        println("2. Realiza tus acciones manualmente (60 segundos)")
+        println("3. El Inspector capturará el código Java automáticamente")
+        println("4. Copia el código generado en tu test")
+        println("=".repeat(60) + "\n")
+        
+        exec {
+            environment 'PWDEBUG', '1'
+            commandLine 'gradle', 'test', '--tests', 'com.qa.automation.recorder.RecorderTest.recordMyFirstTest'
+        }
+    }
+}
+
+// Task para grabar con tracing completo (screenshots, snapshots, eventos)
+task recordTestWithTrace {
+    doLast {
+        println("\n" + "=".repeat(60))
+        println("📹 INICIANDO GRABACIÓN CON TRACING COMPLETO")
+        println("=".repeat(60))
+        println("Se grabarán:")
+        println("  ✓ Screenshots de cada acción")
+        println("  ✓ Snapshots del DOM")
+        println("  ✓ Eventos del navegador")
+        println("  ✓ Código Java generado")
+        println("\nResultado guardado en: target/trace.zip")
+        println("=".repeat(60) + "\n")
+        
+        exec {
+            environment 'PWDEBUG', 'console'
+            commandLine 'gradle', 'test', '--tests', 'com.qa.automation.recorder.RecorderTest.recordWithTracing'
+        }
+    }
+}
+
+// Task para visualizar las grabaciones (traces)
+task openTrace {
+    doLast {
+        println("\n" + "=".repeat(60))
+        println("📺 ABRIENDO VISUALIZADOR DE TRACES")
+        println("=".repeat(60) + "\n")
+        
+        exec {
+            commandLine 'npx', 'playwright', 'show-trace', 'target/trace.zip'
+        }
+    }
+}
+
+// Task para grabar con configuración del proyecto
+task recordTestWithConfig {
+    doLast {
+        println("\n" + "=".repeat(60))
+        println("⚙️  GRABACIÓN CON CONFIGURACIÓN DEL PROYECTO")
+        println("=".repeat(60))
+        println("Usando URL base y configuración de config.json")
+        println("=".repeat(60) + "\n")
+        
+        exec {
+            environment 'PWDEBUG', '1'
+            commandLine 'gradle', 'test', '--tests', 'com.qa.automation.recorder.RecorderTest.recordWithConfiguration'
+        }
+    }
+}
+
+// ========== TASKS EXISTENTES ==========
+
+// Task para generar reporte Allure
+task allureReport {
+    doLast {
+        exec {
+            commandLine 'allure', 'generate', 'target/allure-results', '-o', 'target/allure-report', '--clean'
         }
     }
 }
