@@ -2,6 +2,7 @@ package com.qa.automation.pages;
 
 import com.microsoft.playwright.Page;
 import com.qa.automation.base.BasePage;
+import io.qameta.allure.Allure;
 
 /**
  * Clase de ejemplo para demostrar cómo extender BasePage
@@ -13,8 +14,8 @@ public class LoginPage extends BasePage {
     private static final String USERNAME_INPUT = "//input[@id='userName']";
     private static final String PASSWORD_INPUT = "//input[@id='password']";
     private static final String LOGIN_BUTTON = "//button[@id='login']";
-    private static final String ERROR_MESSAGE = ".error-message";
-    private static final String WELCOME_TEXT = "//p[@id='name']";
+    private static final String ERROR_MESSAGE = "//p[@id='name']";
+    private static final String WELCOME_TEXT = ".welcome-text";
 
     public LoginPage(Page page) {
         super(page);

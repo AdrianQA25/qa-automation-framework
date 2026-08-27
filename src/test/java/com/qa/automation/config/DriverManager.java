@@ -26,6 +26,9 @@ public class DriverManager {
             boolean headless = ConfigurationManager.isHeadless();
 
             BrowserType.LaunchOptions options = new BrowserType.LaunchOptions().setHeadless(headless);
+            if (ConfigurationManager.isMaximizeWindow() && !headless && "chromium".equals(browserType)) {
+                options.setArgs(java.util.List.of("--start-maximized"));
+            }
 
             browser = switch (browserType) {
                 case "firefox" -> playwright.firefox().launch(options);
@@ -44,12 +47,24 @@ public class DriverManager {
     /**
      * Crear contexto y página
      */
+
     private static void createContext() {
         logger.info("Creando contexto y página");
-        context = browser.newContext();
+
+        Browser.NewContextOptions contextOptions = new Browser.NewContextOptions();
+
+        if (ConfigurationManager.isMaximizeWindow() && !ConfigurationManager.isHeadless()) {
+            contextOptions.setViewportSize((com.microsoft.playwright.options.ViewportSize) null);
+        } else {
+            contextOptions.setViewportSize(
+                    ConfigurationManager.getViewportWidth(),
+                    ConfigurationManager.getViewportHeight()
+            );
+        }
+
+        context = browser.newContext(contextOptions);
         page = context.newPage();
 
-        // Configurar timeout global
         int timeout = ConfigurationManager.getTimeout();
         page.setDefaultTimeout(timeout);
         page.setDefaultNavigationTimeout(timeout);
@@ -124,4 +139,5 @@ public class DriverManager {
         page.evaluate("() => localStorage.clear()");
         page.evaluate("() => sessionStorage.clear()");
     }
+
 }

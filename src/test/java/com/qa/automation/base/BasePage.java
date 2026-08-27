@@ -116,9 +116,15 @@ public class BasePage {
     public boolean isVisible(String selector) {
         logger.info("Verificando visibilidad de: " + selector);
         try {
-            return page.isVisible(selector);
+            ElementHandle element = page.waitForSelector(
+                    selector,
+                    new Page.WaitForSelectorOptions()
+                            .setState(WaitForSelectorState.VISIBLE)
+                            .setTimeout(3000)
+            );
+            return element != null;
         } catch (PlaywrightException e) {
-            logger.warn("Elemento no visible: " + selector);
+            logger.warn("Error verificando visibilidad de: " + selector, e);
             return false;
         }
     }

@@ -58,4 +58,16 @@ public class ConfigurationManager {
     public static String getReportPath() {
         return config.get("reportPath").getAsString();
     }
+
+    public static boolean isMaximizeWindow() {
+        return config.get("maximizeWindow").getAsBoolean();
+    }
+
+    public static int getViewportWidth() {
+        return config.get("viewportWidth").getAsInt();
+    }
+
+    public static int getViewportHeight() {
+        return config.get("viewportHeight").getAsInt();
+    }
 }

@@ -5,5 +5,8 @@
   "timeout": 30000,
   "screenshotPath": "target/screenshots/",
   "takeScreenshots": true,
-  "reportPath": "target/allure-results/"
+  "reportPath": "target/allure-results/",
+  "maximizeWindow": true,
+  "viewportWidth": 1920,
+  "viewportHeight": 1200
 }

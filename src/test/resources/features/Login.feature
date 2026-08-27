@@ -6,13 +6,14 @@ Feature: Login Feature
   Scenario: Login exitoso con credenciales válidas
     Given Usuario navega a la página de login
     When Usuario realiza login con "user@example.com" y "password123"
-    Then Usuario debería ver mensaje de bienvenida "Invalid username or password!"
+    Then Usuario debería ver mensaje de bienvenida "Welcome"
 
+    @login_failed
   Scenario: Login fallido con contraseña incorrecta
     Given Usuario navega a la página de login
     When Usuario realiza login con "user@example.com" y "wrongpassword"
     Then Mensaje de error debería ser mostrado
-    And Usuario debería ver mensaje de error "Invalid credentials"
+    And Usuario debería ver mensaje de error "Invalid username or password!"
 
   Scenario: Login fallido con usuario no existente
     Given Usuario navega a la página de login
